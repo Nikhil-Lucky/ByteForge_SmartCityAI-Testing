@@ -1,0 +1,20 @@
+[
+  {
+    "id": "TRF-001",
+    "route": "Jayanagar 4th Block to Majestic",
+    "status": "Heavy Traffic",
+    "delay_minutes": 25,
+    "cause": "Waterlogging near South End Circle",
+    "alternate_route": "Via Jayanagar 3rd Block -> Lalbagh Road",
+    "last_updated": "2024-10-25T08:30:00Z"
+  },
+  {
+    "id": "TRF-002",
+    "route": "Jayanagar 7th Block to Koramangala",
+    "status": "Moderate Traffic",
+    "delay_minutes": 10,
+    "cause": "Normal peak hour traffic",
+    "alternate_route": "Via BTM Layout",
+    "last_updated": "2024-10-25T08:35:00Z"
+  }
+]
