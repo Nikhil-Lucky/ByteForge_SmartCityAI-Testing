@@ -9,12 +9,12 @@
 - [x] Repository setup & folder structure (by Nikhil)
 - [ ] requirements.txt added
 - [ ] Basic Streamlit app structure
+- [x] Shahid: Created initial mock data files (ambulances, hospitals, traffic, complaints)
 
 ### Next Tasks (Next 3 hours):
 - Nikhil: Add Multi-Agent system
 - Sunay: UI + Chat Interface
 - Suhas: Map integration
-- Shahid: Mock data files
 
 ---
 
