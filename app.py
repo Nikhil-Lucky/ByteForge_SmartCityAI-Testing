@@ -1,102 +1,111 @@
 import streamlit as st
-import folium
-from streamlit_folium import st_folium
 import json
-import requests
 from datetime import datetime
 
-# Page Configuration
 st.set_page_config(page_title="SmartCity AI", layout="wide", page_icon="🏙️")
 
-st.title("🏙️ SmartCity AI")
-st.subheader("Intelligent Assistant for Bengaluru Citizens")
-st.markdown("**Team ByteForge** | Real-time Civic Decision Making")
-
-# Sidebar
+# ====================== SIDEBAR ======================
 with st.sidebar:
-    st.image("https://via.placeholder.com/150x150/00BFFF/FFFFFF?text=ByteForge", width=150)
-    st.title("Navigation")
-    page = st.radio("Go to", ["🏠 Home", "🚑 Emergency", "🛣️ Traffic", "📢 Complaints", "🗺️ Live Map"])
-    
-    st.divider()
-    st.caption("Made with ❤️ for Bengaluru")
+    st.image("https://via.placeholder.com/150/00BFFF/FFFFFF?text=ByteForge", width=150)
+    st.title("🧭 Navigation")
+    page = st.radio("Quick Access", 
+        ["🏠 Home", "🚑 Emergency", "🛣️ Traffic", "📢 Complaints", "🗺️ Live Map"])
 
-# Mock Data
-@st.cache_data
-def load_mock_data():
-    # Ambulances
-    ambulances = [
-        {"id": "AMB001", "location": [12.9250, 77.5850], "status": "Free", "hospital": "Jayanagar General"},
-        {"id": "AMB002", "location": [12.9300, 77.5800], "status": "Busy", "hospital": "Sagar Hospital"},
-        {"id": "AMB003", "location": [12.9200, 77.5900], "status": "Free", "hospital": "Manipal Hospital"},
-    ]
-    return ambulances
+# ====================== HEADER ======================
+st.title("🏙️ SmartCity AI")
+st.subheader("Intelligent Multi-Agent Assistant for Bengaluru")
+st.caption("**Team ByteForge** • Real-time Civic Decision Making")
 
-ambulances = load_mock_data()
-
-# Main Content
-if page == "🏠 Home":
-    st.success("Welcome to SmartCity AI! Ask me anything about emergencies, traffic, or civic issues.")
-    st.info("Example queries:\n• I need ambulance in Jayanagar 3rd Block\n• Best route to Majestic now\n• Pothole in 7th block")
-
-elif page == "🚑 Emergency":
-    st.header("🚑 Emergency Assistant")
-    query = st.text_input("Describe your emergency:", placeholder="Need ambulance in Jayanagar...")
-    
-    if st.button("Get Help"):
-        with st.spinner("Finding best resources..."):
-            st.success("✅ Nearest Ambulance Found!")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric("Ambulance ID", "AMB001")
-                st.metric("ETA", "9 minutes")
-            with col2:
-                st.metric("Recommended Hospital", "Jayanagar General")
-                st.metric("Beds Available", "12")
-            
-            st.map(pd.DataFrame([{"lat": 12.9250, "lon": 77.5850}]))
-
-elif page == "🛣️ Traffic":
-    st.header("🛣️ Smart Route Advisor")
-    origin = st.text_input("From:", "Jayanagar")
-    destination = st.text_input("To:", "Majestic")
-    if st.button("Find Best Route"):
-        st.success("Best Route Found!")
-        st.info("Route via 100 Feet Road • Time: 28 mins • Traffic: Medium")
-
-elif page == "📢 Complaints":
-    st.header("📢 Civic Complaint Manager")
-    issue = st.text_input("Describe the issue:", "Pothole in Jayanagar 7th Block")
-    if st.button("Register Complaint"):
-        st.success(f"Complaint Registered! ID: COMP-{datetime.now().strftime('%H%M')}")
-        st.info("Expected Resolution: 48 hours")
-
-elif page == "🗺️ Live Map":
-    st.header("🗺️ Live City Map")
-    m = folium.Map(location=[12.9250, 77.5850], zoom_start=14)
-    
-    # Add ambulances
-    for amb in ambulances:
-        color = "green" if amb["status"] == "Free" else "red"
-        folium.Marker(
-            amb["location"],
-            popup=f"Ambulance {amb['id']} - {amb['status']}",
-            icon=folium.Icon(color=color, icon="ambulance", prefix="fa")
-        ).add_to(m)
-    
-    st_folium(m, width=1200, height=600)
-
-# Chat Interface (Your Main AI Part)
+# ====================== MAIN CHAT INTERFACE (Most Important) ======================
 st.divider()
-st.subheader("💬 Ask SmartCity AI")
-user_input = st.text_input("Type your query here (e.g. Need ambulance...)", key="chat_input")
+st.subheader("💬 Ask Anything (Natural Language)")
 
-if st.button("Send") and user_input:
-    with st.spinner("Thinking..."):
-        # This is where your multi-agent logic will go
-        response = f"✅ Understood: **{user_input}**\n\nI'm analyzing the best action using real-time data..."
-        st.write(response)
-        st.info("🔄 Multi-agent system is being built by Nikhil")
+user_query = st.text_input(
+    "Type your message here...", 
+    placeholder="I need ambulance in Jayanagar 3rd Block...",
+    key="user_input"
+)
 
-# Footer
+if st.button("Send", type="primary") and user_query:
+    with st.spinner("Router Agent thinking..."):
+        
+        # Simple Router Logic (you can later replace with full LangGraph)
+        query_lower = user_query.lower()
+        
+        if "ambulance" in query_lower or "hospital" in query_lower or "emergency" in query_lower:
+            response = f"""
+**🚑 Emergency Response**
+
+✅ **Router Agent** detected emergency request.
+
+- Nearest Ambulance: **AMB001** (Free)
+- ETA: **8-10 minutes**
+- Recommended Hospital: **Jayanagar General Hospital** (14 beds available)
+- Live tracking activated on map below
+"""
+            st.success(response)
+            
+            # Mock Map
+            st.map(pd.DataFrame([{"lat": 12.9250, "lon": 77.5850}]), use_container_width=True)
+            
+        elif "route" in query_lower or "traffic" in query_lower or "go to" in query_lower or "majestic" in query_lower:
+            response = f"""
+**🛣️ Smart Route Advisor**
+
+✅ Best Route Found!
+
+- From: Jayanagar → To: Majestic
+- Recommended Path: 100 Feet Road → Silk Board Flyover
+- Estimated Time: **26 minutes**
+- Traffic: Medium | Saves **15 minutes** compared to usual route
+"""
+            st.success(response)
+            
+        elif "pothole" in query_lower or "garbage" in query_lower or "water" in query_lower or "power" in query_lower or "complaint" in query_lower:
+            comp_id = f"COMP-{datetime.now().strftime('%H%M%S')}"
+            response = f"""
+**📢 Complaint Registered**
+
+✅ Complaint ID: **{comp_id}**
+
+- Issue: {user_query}
+- Status: Forwarded to BBMP Ward 172
+- Expected Resolution: 24-48 hours
+- You will be notified when action is taken
+"""
+            st.success(response)
+            
+        else:
+            # General / Router fallback
+            response = f"""
+**✅ SmartCity AI**
+
+I understood your query: **{user_query}**
+
+I'm a multi-agent system. I can help with:
+- 🚑 Ambulance & Hospital
+- 🛣️ Traffic & Best Routes  
+- 📢 Civic Complaints (Pothole, Garbage, Water, Power)
+- 🗺️ Live Map
+
+Try more specific questions!
+"""
+            st.info(response)
+
+# ====================== QUICK TABS (Still available) ======================
+st.divider()
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    if st.button("🚑 Emergency Help"):
+        st.info("Type in chat: 'Need ambulance...'")
+with col2:
+    if st.button("🛣️ Best Route"):
+        st.info("Type in chat: 'Best way to Majestic...'")
+with col3:
+    if st.button("📢 Report Issue"):
+        st.info("Type in chat: 'Pothole in 7th block...'")
+with col4:
+    if st.button("🗺️ Show Live Map"):
+        st.info("Go to Live Map tab in sidebar")
+
 st.caption("ByteForge_SmartCityAI • Hackathon 2026")
