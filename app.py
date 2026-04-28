@@ -150,18 +150,19 @@ Try more specific questions!
 
 # ====================== QUICK TABS (Still available) ======================
 st.divider()
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    if st.button("🚑 Emergency Help"):
-        st.info("Type in chat: 'Need ambulance...'")
-with col2:
+st.subheader("Quick Actions")
+cols = st.columns(4)
+with cols[0]:
+    if st.button("🚑 Ambulance"):
+        st.info("Type: I need ambulance...")
+with cols[1]:
     if st.button("🛣️ Best Route"):
-        st.info("Type in chat: 'Best way to Majestic...'")
-with col3:
+        st.info("Type: Best route to Majestic...")
+with cols[2]:
     if st.button("📢 Report Issue"):
-        st.info("Type in chat: 'Pothole in 7th block...'")
-with col4:
-    if st.button("🗺️ Show Live Map"):
-        st.info("Go to Live Map tab in sidebar")
+        st.info("Type: Pothole in 7th block...")
+with cols[3]:
+    if st.button("🗺️ Live Map"):
+        st.switch_page("🗺️ Live Map") if "🗺️ Live Map" in st.session_state else st.info("Go to Live Map tab")
 
-st.caption("ByteForge_SmartCityAI • Hackathon 2026")
+st.caption("ByteForge_SmartCityAI • Testing Version | Multi-Agent Ready")
