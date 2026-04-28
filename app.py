@@ -1,8 +1,14 @@
 import streamlit as st
-import json
+import pandas as pd
 from datetime import datetime
 from streamlit_folium import st_folium
-from utils.map_utils import generate_live_city_map, generate_emergency_response_map
+from utils.map_utils import (
+    generate_live_city_map, 
+    generate_emergency_response_map,
+    get_nearest_ambulance,
+    get_best_hospital
+)
+from utils.mock_data import get_mock_hospitals, BASE_LAT, BASE_LON
 
 st.set_page_config(page_title="SmartCity AI", layout="wide", page_icon="🏙️")
 
@@ -28,6 +34,18 @@ if page == "🗺️ Live Map":
     with st.spinner("Loading live map data..."):
         m = generate_live_city_map()
         st_folium(m, width=1200, height=600, returned_objects=[])
+        
+    st.divider()
+    st.subheader("📊 Hospital Bed Availability")
+    
+    # Generate bar chart data
+    hospitals = get_mock_hospitals()
+    chart_data = pd.DataFrame({
+        "Hospital": [h["name"] for h in hospitals],
+        "Available Beds": [h["beds_available"] for h in hospitals]
+    }).set_index("Hospital")
+    
+    st.bar_chart(chart_data, color="#00BFFF")
 
 else:
     # ====================== MAIN CHAT INTERFACE ======================
@@ -42,24 +60,39 @@ else:
     if st.button("Send", type="primary") and user_query:
         with st.spinner("Router Agent thinking..."):
             
-            # Simple Router Logic (you can later replace with full LangGraph)
             query_lower = user_query.lower()
             
             if "ambulance" in query_lower or "hospital" in query_lower or "emergency" in query_lower:
+                # Calculate real distances
+                user_lat, user_lon = BASE_LAT, BASE_LON # Simulating user in Jayanagar
+                
+                nearest_amb, amb_dist = get_nearest_ambulance(user_lat, user_lon)
+                best_hosp, hosp_dist = get_best_hospital(user_lat, user_lon)
+                
+                # Assume ambulance travels at 30 km/h on average in city traffic
+                eta_minutes = int((amb_dist / 30.0) * 60)
+                if eta_minutes < 1: eta_minutes = 1
+                
                 response = f"""
 **🚑 Emergency Response**
     
 ✅ **Router Agent** detected emergency request.
     
-- Nearest Ambulance: **AMB001** (Free)
-- ETA: **8-10 minutes**
-- Recommended Hospital: **Jayanagar General Hospital** (14 beds available)
+- Nearest Ambulance: **{nearest_amb['id']}** ({nearest_amb['type']})
+- Distance away: **{amb_dist:.1f} km**
+- ETA: **~{eta_minutes} minutes**
+- Recommended Hospital: **{best_hosp['name']}** ({best_hosp['beds_available']} beds available, {hosp_dist:.1f} km away)
 - Live tracking activated on map below
 """
                 st.success(response)
                 
                 # Dynamic Folium Map for Emergency
-                m = generate_emergency_response_map()
+                m = generate_emergency_response_map(
+                    user_lat=user_lat, 
+                    user_lon=user_lon,
+                    assigned_amb=nearest_amb,
+                    target_hosp=best_hosp
+                )
                 st_folium(m, width=800, height=500, returned_objects=[])
                 
             elif "route" in query_lower or "traffic" in query_lower or "go to" in query_lower or "majestic" in query_lower:
