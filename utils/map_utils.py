@@ -64,8 +64,8 @@ def generate_live_city_map():
         
     return m
 
-def generate_emergency_response_map(user_lat=BASE_LAT, user_lon=BASE_LON, assigned_amb=None, target_hosp=None):
-    """Generates a map showing user location, assigned ambulance, and target hospital."""
+def generate_emergency_response_map(user_lat=BASE_LAT, user_lon=BASE_LON, assigned_amb=None, target_hosp=None, has_flood=True):
+    """Generates a map showing user location, assigned ambulance, and target hospital. Detours around floods if active."""
     m = create_base_map(lat=user_lat, lon=user_lon, zoom_start=15)
     
     # Add User Location
@@ -90,12 +90,38 @@ def generate_emergency_response_map(user_lat=BASE_LAT, user_lon=BASE_LON, assign
         ).add_to(m)
     
     if assigned_amb and target_hosp:
-        # Draw a simple line representing the route (mock route)
-        route_coords = [
-            [assigned_amb["lat"], assigned_amb["lon"]],
-            [user_lat, user_lon],
-            [target_hosp["lat"], target_hosp["lon"]]
-        ]
-        folium.PolyLine(route_coords, color="blue", weight=2.5, opacity=0.8).add_to(m)
+        route_coords = [[assigned_amb["lat"], assigned_amb["lon"]]]
+        
+        # Add a mock flood zone and detour
+        if has_flood:
+            # Create a mock flood polygon between ambulance and user
+            flood_center_lat = (assigned_amb["lat"] + user_lat) / 2
+            flood_center_lon = (assigned_amb["lon"] + user_lon) / 2
+            
+            flood_coords = [
+                [flood_center_lat + 0.002, flood_center_lon + 0.002],
+                [flood_center_lat + 0.002, flood_center_lon - 0.002],
+                [flood_center_lat - 0.002, flood_center_lon - 0.002],
+                [flood_center_lat - 0.002, flood_center_lon + 0.002]
+            ]
+            
+            folium.Polygon(
+                locations=flood_coords,
+                color="red",
+                fill=True,
+                fill_color="red",
+                fill_opacity=0.4,
+                popup="<b>⚠️ Flooded Zone (Route Diverted)</b>"
+            ).add_to(m)
+            
+            # Add a detour point to route around the flood
+            detour_point = [flood_center_lat - 0.004, flood_center_lon]
+            route_coords.append(detour_point)
+            
+        route_coords.append([user_lat, user_lon])
+        route_coords.append([target_hosp["lat"], target_hosp["lon"]])
+        
+        # Draw the route
+        folium.PolyLine(route_coords, color="blue", weight=3, opacity=0.8).add_to(m)
     
     return m

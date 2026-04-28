@@ -91,9 +91,18 @@ else:
                     user_lat=user_lat, 
                     user_lon=user_lon,
                     assigned_amb=nearest_amb,
-                    target_hosp=best_hosp
+                    target_hosp=best_hosp,
+                    has_flood=True # Trigger the flood avoidance logic
                 )
                 st_folium(m, width=800, height=500, returned_objects=[])
+                
+                # Explainability Box
+                st.info(f"""
+                💡 **Why this recommendation?**  
+                We selected **{best_hosp['name']}** because it is the closest facility ({hosp_dist:.1f} km away) that currently has open beds ({best_hosp['beds_available']} available).  
+                Ambulance **{nearest_amb['id']}** was dispatched because it is the nearest available unit equipped with {nearest_amb['type']} capabilities.  
+                ⚠️ *Notice: A flooded zone was detected on the main route. The ambulance has been automatically rerouted to avoid waterlogging.*
+                """)
                 
             elif "route" in query_lower or "traffic" in query_lower or "go to" in query_lower or "majestic" in query_lower:
                 response = f"""

@@ -11,12 +11,13 @@
 - [x] Basic Streamlit app structure
 - [x] Map integration & Mock Data for Ambulances (by Suhas)
 - [x] Shahid: Created initial mock data files (ambulances, hospitals, traffic, complaints)
+- [x] Suhas: Hospital Bed Charts & Route distance calculations
 
 ### Next Tasks (Next 3 hours):
 - Nikhil: Add Multi-Agent system
 - Sunay: UI + Chat Interface
-- Suhas: Hospital Bed Charts & Route distance calculations
 - Shahid: Connect mock data to agents
+- Suhas: Weather/Flood map overlays & Explainability text
 
 ---
 
