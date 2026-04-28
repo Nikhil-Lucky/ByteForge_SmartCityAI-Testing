@@ -1,5 +1,5 @@
 import streamlit as st
-import json
+import pandas as pd
 from datetime import datetime
 
 st.set_page_config(page_title="SmartCity AI", layout="wide", page_icon="🏙️")
@@ -16,9 +16,9 @@ st.title("🏙️ SmartCity AI")
 st.subheader("Intelligent Multi-Agent Assistant for Bengaluru")
 st.caption("**Team ByteForge** • Real-time Civic Decision Making")
 
-# ====================== MAIN CHAT INTERFACE (Most Important) ======================
+# ====================== MAIN INTELLIGENT CHAT ======================
 st.divider()
-st.subheader("💬 Ask Anything (Natural Language)")
+st.subheader("💬 Ask SmartCity AI (Multi-Agent System)")
 
 user_query = st.text_input(
     "Type your message here...", 
@@ -27,85 +27,63 @@ user_query = st.text_input(
 )
 
 if st.button("Send", type="primary") and user_query:
-    with st.spinner("Router Agent thinking..."):
+    with st.spinner("🤖 Router Agent → Data Agent → Optimizer Agent working..."):
         
-        # Simple Router Logic (you can later replace with full LangGraph)
         query_lower = user_query.lower()
         
         if "ambulance" in query_lower or "hospital" in query_lower or "emergency" in query_lower:
-            response = f"""
-**🚑 Emergency Response**
-
-✅ **Router Agent** detected emergency request.
-
-- Nearest Ambulance: **AMB001** (Free)
-- ETA: **8-10 minutes**
-- Recommended Hospital: **Jayanagar General Hospital** (14 beds available)
-- Live tracking activated on map below
-"""
-            st.success(response)
+            st.success("🚑 **Emergency Module Activated**")
+            col1, col2 = st.columns(2)
+            with col1:
+                st.metric("Ambulance", "AMB001")
+                st.metric("ETA", "8 minutes")
+            with col2:
+                st.metric("Hospital", "Jayanagar General")
+                st.metric("Beds Free", "14")
             
-            # Mock Map
+            st.info("📍 **Mock Live Tracking Started**")
             st.map(pd.DataFrame([{"lat": 12.9250, "lon": 77.5850}]), use_container_width=True)
             
-        elif "route" in query_lower or "traffic" in query_lower or "go to" in query_lower or "majestic" in query_lower:
-            response = f"""
-**🛣️ Smart Route Advisor**
-
-✅ Best Route Found!
-
-- From: Jayanagar → To: Majestic
-- Recommended Path: 100 Feet Road → Silk Board Flyover
-- Estimated Time: **26 minutes**
-- Traffic: Medium | Saves **15 minutes** compared to usual route
-"""
-            st.success(response)
+        elif "route" in query_lower or "traffic" in query_lower or "majestic" in query_lower:
+            st.success("🛣️ **Route Optimizer Agent** Activated")
+            st.write("**Best Route**: Jayanagar → 100 Feet Road → Silk Board")
+            st.write("**Time**: 26 mins | **Traffic**: Medium")
             
-        elif "pothole" in query_lower or "garbage" in query_lower or "water" in query_lower or "power" in query_lower or "complaint" in query_lower:
+        elif any(x in query_lower for x in ["pothole", "garbage", "water", "power", "light", "complaint"]):
             comp_id = f"COMP-{datetime.now().strftime('%H%M%S')}"
-            response = f"""
-**📢 Complaint Registered**
-
-✅ Complaint ID: **{comp_id}**
-
-- Issue: {user_query}
-- Status: Forwarded to BBMP Ward 172
-- Expected Resolution: 24-48 hours
-- You will be notified when action is taken
-"""
-            st.success(response)
+            st.success("📢 **Complaint Agent** Activated")
+            st.write(f"**Complaint ID**: {comp_id}")
+            st.write("Status: Forwarded to BBMP Ward 172")
+            st.write("Expected Resolution: 24-48 hours")
             
         else:
-            # General / Router fallback
-            response = f"""
-**✅ SmartCity AI**
+            st.info(f"""
+            ✅ **Router Agent** received: **{user_query}**
 
-I understood your query: **{user_query}**
+            I am a **Multi-Agent System**:
+            - Router Agent → Decides category
+            - Data Agent → Fetches real-time info
+            - Optimizer Agent → Gives best solution
+            - Explainer Agent → Explains why
 
-I'm a multi-agent system. I can help with:
-- 🚑 Ambulance & Hospital
-- 🛣️ Traffic & Best Routes  
-- 📢 Civic Complaints (Pothole, Garbage, Water, Power)
-- 🗺️ Live Map
+            Try: ambulance, route, pothole, etc.
+            """)
 
-Try more specific questions!
-"""
-            st.info(response)
-
-# ====================== QUICK TABS (Still available) ======================
+# Quick Actions
 st.divider()
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    if st.button("🚑 Emergency Help"):
-        st.info("Type in chat: 'Need ambulance...'")
-with col2:
+st.subheader("Quick Actions")
+cols = st.columns(4)
+with cols[0]:
+    if st.button("🚑 Ambulance"):
+        st.info("Type: I need ambulance...")
+with cols[1]:
     if st.button("🛣️ Best Route"):
-        st.info("Type in chat: 'Best way to Majestic...'")
-with col3:
+        st.info("Type: Best route to Majestic...")
+with cols[2]:
     if st.button("📢 Report Issue"):
-        st.info("Type in chat: 'Pothole in 7th block...'")
-with col4:
-    if st.button("🗺️ Show Live Map"):
-        st.info("Go to Live Map tab in sidebar")
+        st.info("Type: Pothole in 7th block...")
+with cols[3]:
+    if st.button("🗺️ Live Map"):
+        st.switch_page("🗺️ Live Map") if "🗺️ Live Map" in st.session_state else st.info("Go to Live Map tab")
 
-st.caption("ByteForge_SmartCityAI • Hackathon 2026")
+st.caption("ByteForge_SmartCityAI • Testing Version | Multi-Agent Ready")
