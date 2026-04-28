@@ -1,0 +1,32 @@
+[
+  {
+    "id": "HOSP-001",
+    "name": "Apollo Specialty Hospital",
+    "location": {"lat": 12.9220, "lng": 77.5950, "area": "Jayanagar 3rd Block"},
+    "total_beds": 150,
+    "available_beds": 12,
+    "icu_beds_available": 3,
+    "contact": "080-12345678",
+    "specialties": ["Cardiology", "Neurology", "Emergency"]
+  },
+  {
+    "id": "HOSP-002",
+    "name": "Sagar Hospitals",
+    "location": {"lat": 12.9295, "lng": 77.6000, "area": "Jayanagar 4th Block"},
+    "total_beds": 200,
+    "available_beds": 45,
+    "icu_beds_available": 10,
+    "contact": "080-87654321",
+    "specialties": ["Orthopedics", "Oncology", "General Medicine"]
+  },
+  {
+    "id": "HOSP-003",
+    "name": "Cloudnine Hospital",
+    "location": {"lat": 12.9255, "lng": 77.5920, "area": "Jayanagar 3rd Block"},
+    "total_beds": 50,
+    "available_beds": 5,
+    "icu_beds_available": 0,
+    "contact": "080-11223344",
+    "specialties": ["Maternity", "Pediatrics"]
+  }
+]
